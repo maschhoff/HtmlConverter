@@ -10,38 +10,32 @@ import com.lowagie.text.pdf.PdfFileSpecification;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import gui.ava.html.Html2Image;
-import gui.ava.html.image.generator.HtmlImageGenerator;
 import gui.ava.html.parser.HtmlParser;
 import gui.ava.html.parser.HtmlParserImpl;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xhtmlrenderer.resource.XMLResource;
-import org.xml.sax.InputSource;
 
 /**
  *
- * @author web
+ * @author Mathias Aschhoff ZTG 2016 m.aschhoff@ztg-nrw.de
  */
 public class HtmlConverter {
 
-    private static String html = "";
+
 
     /**
+     * Main method for running on CommandLine File2PDF
+     * Needs 2/3 args
+     * 2 args without attachment html and output file
+     * 3 with an attachment
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, FileNotFoundException, DocumentException {
@@ -66,6 +60,12 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * Convert HTML File to Image
+     * @param file_uri
+     * @param output
+     * @throws MalformedURLException 
+     */
     public static void fromFile(String file_uri, String output) throws MalformedURLException {
 
         final Html2Image html2Image = Html2Image.fromFile(new File(file_uri), null);
@@ -73,11 +73,25 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * Convert HTML String to Image
+     * @param html
+     * @param output 
+     */
     public static void fromString(String html, String output) {
         final Html2Image html2Image = Html2Image.fromHtml(html, null);
         html2Image.getImageRenderer().saveImage(output + ".png");
     }
 
+    /**
+     * Attachment to PDF File
+     * 
+     * @param src
+     * @param output
+     * @param attachment_uri
+     * @throws IOException
+     * @throws DocumentException 
+     */
     public static void addFileToPDF(String src, String output, String attachment_uri) throws IOException, DocumentException {
 
         PdfReader reader = new PdfReader(src);
@@ -85,6 +99,14 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * Attachment to PDFByteArray
+     * @param fos
+     * @param output
+     * @param attachment_uri
+     * @throws IOException
+     * @throws DocumentException 
+     */
     public static void addFileToByteArray(ByteArrayOutputStream fos, String output, String attachment_uri) throws IOException, DocumentException {
 
         PdfReader reader = new PdfReader(fos.toByteArray());
@@ -92,6 +114,15 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * Method for attachment. Adds a File to a PDF as attachment
+     * 
+     * @param reader
+     * @param output
+     * @param attachment_uri
+     * @throws IOException
+     * @throws DocumentException 
+     */
     private static void addFile(PdfReader reader, String output, String attachment_uri) throws IOException, DocumentException {
 
         File attachment = new File(attachment_uri);
@@ -107,6 +138,13 @@ public class HtmlConverter {
         stamper.close();
     }
 
+    /**
+     * From HTML file to PDF
+     * 
+     * @param file_uri
+     * @param output
+     * @param attachment_uri 
+     */
     public static void fromFileToPDF(String file_uri, String output, String attachment_uri)  {
 
         HtmlParser parser = new HtmlParserImpl();
@@ -123,6 +161,13 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * From HTML String to PDF File
+     * 
+     * @param html
+     * @param output
+     * @param attachment_uri 
+     */
     public static void fromStringToPDF(String html, String output, String attachment_uri)  {
 
         HtmlParser parser = new HtmlParserImpl();
@@ -139,6 +184,13 @@ public class HtmlConverter {
 
     }
 
+    /**
+     * Method to convert. If attachment is given it will be added here
+     * 
+     * @param renderer
+     * @param output
+     * @param attachment_uri 
+     */
     private static void toPDF(ITextRenderer renderer, String output, String attachment_uri)  {
         String fileNameWithPath = output + ".pdf";
         if (attachment_uri.isEmpty()) {
