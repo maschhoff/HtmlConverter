@@ -49,8 +49,18 @@ public class HtmlConverter {
             return;
         }
 
-        //  fromFile(args[0], args[1]);
+     
+         if (args.length==2) {
+              //  fromFile(args[0], args[1]);
+        fromFileToPDF(args[0], args[1], "");
+        }
+         
+         if (args.length==3) {
+             //  fromFile(args[0], args[1]);
         fromFileToPDF(args[0], args[1], args[2]);
+        }
+        
+       
 
     }
 
@@ -113,9 +123,14 @@ public class HtmlConverter {
 
     public static void fromStringToPDF(String html, String output, String attachment_uri) throws FileNotFoundException, DocumentException, IOException {
 
+        HtmlParser parser = new HtmlParserImpl();
+        parser.loadHtml(html, null);
+
+        Document document = parser.getDocument();
+
         ITextRenderer renderer = new ITextRenderer();
 
-        renderer.setDocumentFromString(html);
+        renderer.setDocument(document, null);
         renderer.layout();
 
         toPDF(renderer, output, attachment_uri);
