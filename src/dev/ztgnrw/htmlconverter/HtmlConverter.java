@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.resource.XMLResource;
@@ -105,7 +107,7 @@ public class HtmlConverter {
         stamper.close();
     }
 
-    public static void fromFileToPDF(String file_uri, String output, String attachment_uri) throws FileNotFoundException, DocumentException, IOException {
+    public static void fromFileToPDF(String file_uri, String output, String attachment_uri)  {
 
         HtmlParser parser = new HtmlParserImpl();
         parser.load(new File(file_uri).toURI(), null);
@@ -121,7 +123,7 @@ public class HtmlConverter {
 
     }
 
-    public static void fromStringToPDF(String html, String output, String attachment_uri) throws FileNotFoundException, DocumentException, IOException {
+    public static void fromStringToPDF(String html, String output, String attachment_uri)  {
 
         HtmlParser parser = new HtmlParserImpl();
         parser.loadHtml(html, null);
@@ -137,19 +139,40 @@ public class HtmlConverter {
 
     }
 
-    private static void toPDF(ITextRenderer renderer, String output, String attachment_uri) throws FileNotFoundException, DocumentException, IOException {
+    private static void toPDF(ITextRenderer renderer, String output, String attachment_uri)  {
         String fileNameWithPath = output + ".pdf";
         if (attachment_uri.isEmpty()) {
+            try{
             FileOutputStream fos = new FileOutputStream(fileNameWithPath);
             renderer.createPDF(fos);
             fos.close();
+            }catch(FileNotFoundException e){
+                System.err.println("FileNotFoundException");
+                e.printStackTrace();
+            }catch(DocumentException e){
+                System.err.println("DocumentException");
+                e.printStackTrace();
+            }
+            catch(IOException e){
+                System.err.println("IOException");
+                e.printStackTrace();
+            }
         } else {
 
-            ByteArrayOutputStream fos = new ByteArrayOutputStream();
-            renderer.createPDF(fos);
-            fos.close();
-
-            addFileToByteArray(fos, output, attachment_uri);
+            try {
+                ByteArrayOutputStream fos = new ByteArrayOutputStream();
+                renderer.createPDF(fos);
+                fos.close();
+                
+                addFileToByteArray(fos, output, attachment_uri);
+            } catch (DocumentException e) {
+                System.err.println("DocumentException");
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                System.err.println("IOException");
+                e.printStackTrace();
+            }
         }
     }
 
