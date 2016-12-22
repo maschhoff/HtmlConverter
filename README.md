@@ -22,5 +22,13 @@ Example
  //HTML          
  String html="<html><body><h1>Hello HtmlConverter</h1></body></html>"
  //HTML TO PDF without Attachment
- HtmlConverter.fromStringToPDF(html, "myPDFfile", null);
+ HtmlConverter.fromStringToPDF(html, "" ,"myPDFfile", null);
+```
+
+To embed images and css you have too add the Filepath
+like: (!Please use / not \ and please end the line with / to make it work)
+```
+file:///C:/Content/
+
+ HtmlConverter.fromStringToPDF(html, "file:///C:/Content/" ,"myPDFfile", null);
 ```
