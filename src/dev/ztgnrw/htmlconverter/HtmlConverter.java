@@ -40,6 +40,7 @@ public class HtmlConverter {
      */
     public static void main(String[] args) throws IOException, FileNotFoundException, DocumentException {
 
+        
         if (args.length < 2) {
             System.err.println("Usage Html2ImageConverter [path to html] [output filename] [attachment]");
             return;
@@ -55,6 +56,10 @@ public class HtmlConverter {
              //  fromFile(args[0], args[1]);
         fromFileToPDF(args[0], args[1], args[2]);
         }
+       
+       
+      // Probleme mit dem Pfad lösen über file:///
+     //   fromStringToPDF("<img src=\"./bild.jpg\"/>", "file:///C:/Users/maschhoff/Pictures/", "testss", "");
         
        
 
@@ -154,7 +159,7 @@ public class HtmlConverter {
 
         ITextRenderer renderer = new ITextRenderer();
 
-        renderer.setDocument(document, null);
+        renderer.setDocument(document, document.getBaseURI());
         renderer.layout();
 
         toPDF(renderer, output, attachment_uri);
@@ -165,19 +170,20 @@ public class HtmlConverter {
      * From HTML String to PDF File
      * 
      * @param html
+     * @param path - Path to related documents (css, images, etc.)
      * @param output
      * @param attachment_uri 
      */
-    public static void fromStringToPDF(String html, String output, String attachment_uri)  {
+    public static void fromStringToPDF(String html, String path, String output, String attachment_uri)  {
 
         HtmlParser parser = new HtmlParserImpl();
         parser.loadHtml(html, null);
 
         Document document = parser.getDocument();
-
+        
         ITextRenderer renderer = new ITextRenderer();
 
-        renderer.setDocument(document, null);
+        renderer.setDocument(document, path);
         renderer.layout();
 
         toPDF(renderer, output, attachment_uri);
